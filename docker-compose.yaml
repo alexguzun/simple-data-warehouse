@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+    - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_DATABASE: data_warehouse
+
+  app:
+    build: .
+    ports:
+    - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongo
