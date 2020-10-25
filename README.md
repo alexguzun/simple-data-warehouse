@@ -82,8 +82,8 @@ curl -X POST localhost:8080/query/raw -H "Content-Type: application/json" -d  '
 ]'
 ```
 
-## TODO
-- Calculated metrics
+## Things to improve/add
+- Support for calculated metrics in query DSL
 - Run ingestion job in background
-- Documentation improvements
+- Improve the documentation
 - BDD tests
