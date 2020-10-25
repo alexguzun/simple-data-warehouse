@@ -1,11 +1,13 @@
 package com.example.datawarehouse.infrastructure.mongo;
 
 import com.example.datawarehouse.api.model.QueryRequest;
-import com.example.datawarehouse.domain.repository.DataRepository;
 import com.example.datawarehouse.domain.model.querydsl.FilterOperator;
+import com.example.datawarehouse.domain.repository.DataRepository;
 import com.example.datawarehouse.domain.service.IngestionDataTransformer;
 import com.example.datawarehouse.domain.service.QueryService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mongodb.client.model.Aggregates;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ import static com.mongodb.client.model.Projections.include;
 @Slf4j
 public class MongoQueryService implements QueryService {
 	private final DataRepository repository;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
 	public MongoQueryService(DataRepository repository) {
@@ -39,6 +42,8 @@ public class MongoQueryService implements QueryService {
 
 	@Override
 	public Flux<Map<String, Object>> queryRawAggregation(ArrayNode request) {
+		logQuery(request);
+
 		List<Bson> stages = new ArrayList<>();
 		for (JsonNode jsonNode : request) {
 			try {
@@ -54,6 +59,8 @@ public class MongoQueryService implements QueryService {
 
 	@Override
 	public Flux<Map<String, Object>> query(QueryRequest request) {
+		logQuery(request);
+
 		final Optional<Bson> matchStage = buildMatchStage(request);
 		final Optional<Bson> groupByStage = buildGroupByStage(request);
 		final Optional<Bson> projectStage = getProjectionStage(request);
@@ -130,6 +137,16 @@ public class MongoQueryService implements QueryService {
 			return Optional.of(Aggregates.project(fields(projectionFields)));
 		} else {
 			return Optional.empty();
+		}
+	}
+
+	private void logQuery(Object request) {
+		if (log.isDebugEnabled()) {
+			try {
+				log.debug("Running query : " + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(request));
+			} catch (JsonProcessingException e) {
+				log.error("Failed to log query", e);
+			}
 		}
 	}
 }
