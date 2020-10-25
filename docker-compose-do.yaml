@@ -4,9 +4,10 @@ services:
   mongo:
     image: mongo
     restart: always
+    env_file:
+      - /opt/config/secret.env
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: secret
       MONGO_INITDB_DATABASE: data_warehouse
 
   app:
@@ -15,5 +16,7 @@ services:
     ports:
       -  target: 8080
          published: 80
+    env_file:
+      - /opt/config/secret.env
     environment:
       - SPRING_DATA_MONGODB_HOST=mongo
