@@ -1,10 +1,16 @@
 # Simple Data Warehouse
+Simple backend application that exposes data extracted from a csv file via an API.
 
 ## API Documentation
-The API documentation can be checked at this link: `localhost:8080/swagger-ui.html`  
+The API documentation can be checked at: `localhost:8080/swagger-ui.html`  
+
+## Technologies
+- [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
+- [Spring WebFlux](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/web-reactive.html#webflux)
+- [Project Reactor](https://projectreactor.io/docs/core/release/reference/)
+- [MongoDB](https://docs.mongodb.com/manual/introduction/)
 
 ## Running locally
-
 Execute:
 ```
 ./gradlew clean build
